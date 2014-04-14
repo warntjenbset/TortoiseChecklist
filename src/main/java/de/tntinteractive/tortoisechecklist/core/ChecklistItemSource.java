@@ -18,6 +18,7 @@
  */
 package de.tntinteractive.tortoisechecklist.core;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -78,7 +79,7 @@ public abstract class ChecklistItemSource {
     private List<String> determineFilteredPaths(final String wcRoot, final List<String> relativePaths) {
         final List<String> result = new ArrayList<>();
         for (final String path : relativePaths) {
-            if (this.withFiles.matches(wcRoot, path)) {
+            if (this.withFiles.matches(wcRoot, path) && new File(wcRoot, path).exists()) {
                 result.add(path);
             }
         }

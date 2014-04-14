@@ -13,6 +13,7 @@ jar {
             'Implementation-Version': version,
             'main-class': 'de.tntinteractive.tortoisechecklist.TortoiseChecklist'
     }
+    from sourceSets.main.allSource
 }
 
 repositories {

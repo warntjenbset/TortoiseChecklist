@@ -63,7 +63,7 @@ class AuditListenerAdapter implements AuditListener {
 
     private void addViolation(final AuditEvent aEvt, final String message) {
         this.violations.add(ChecklistItem.createViolation(this.description + " in "
-            + aEvt.getFileName() +  ":" + aEvt.getLine() + ":\n" + message));
+            + aEvt.getFileName() +  ":" + aEvt.getLine() + ":\n" + aEvt.getSourceName() + "\n" + message));
     }
 
     public List<? extends ChecklistItem> getViolations() {

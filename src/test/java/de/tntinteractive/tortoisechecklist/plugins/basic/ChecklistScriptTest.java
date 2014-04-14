@@ -120,33 +120,22 @@ public class ChecklistScriptTest {
         assertThat(result, hasQuestions("Schema-Checks ausgeführt?"));
     }
 
-//    @Test
-//    public void testUnconditionalAutomatic() throws Exception {
-//        final String script = "automaticCheck('Automatische Prüfung', 'de.tntinteractive.tortoisechecklist.TestFactory', new Array('param1'))";
-//        final List<ChecklistItem> result = evaluate(script);
-//        assertThat(result, hasSize(1));
-//        final AutomaticCheck check = (AutomaticCheck) result.get(0);
-//        assertThat(check.getText(), is("Automatische Prüfung"));
-//        assertThat(evaluate(check, "a", "b", "c"), contains("a", "b", "c", "param1"));
-//    }
-//
-//    @Test
-//    public void testConditionalAutomaticIsUsed() throws Exception {
-//        final String script =
-//                "automaticCheck('Automatische Prüfung', 'de.tntinteractive.tortoisechecklist.TestFactory', new Array('p')).whenPathMatches('**/*.xsd')\n";
-//        final List<ChecklistItem> result = evaluate(script, "C:\\einTestpfad\\xml\\testschema.xsd");
-//        assertThat(result, hasSize(1));
-//        final AutomaticCheck check = (AutomaticCheck) result.get(0);
-//        assertThat(check.getText(), is("Automatische Prüfung"));
-//        assertThat(evaluate(check, "a", "b", "c"), contains("a", "b", "c", "p"));
-//    }
-//
-//    @Test
-//    public void testConditionalAutomaticIsNotUsed() throws Exception {
-//        final String script =
-//                "automaticCheck('Automatische Prüfung', 'de.tntinteractive.tortoisechecklist.TestFactory', new Array('p')).whenPathMatches('**/*.xsd')\n";
-//        final List<ChecklistItem> result = evaluate(script, "C:\\einTestpfad\\xml\\readme.txt");
-//        assertThat(result, hasSize(0));
-//    }
+    @Test
+    public void testFileFilterOr() throws Exception {
+        final String script =
+                "question('Schema-Checks ausgeführt?').when(pathMatches('a').or(pathMatches('b')))\n";
+        assertThat(evaluate(script, "a"), hasQuestions("Schema-Checks ausgeführt?"));
+        assertThat(evaluate(script, "b"), hasQuestions("Schema-Checks ausgeführt?"));
+        assertThat(evaluate(script, "c"), hasQuestions());
+    }
+
+    @Test
+    public void testFileFilterWithout() throws Exception {
+        final String script =
+                "question('Schema-Checks ausgeführt?').when(pathMatches('*.txt').without(pathMatches('b.txt')))\n";
+        assertThat(evaluate(script, "a.txt"), hasQuestions("Schema-Checks ausgeführt?"));
+        assertThat(evaluate(script, "b.txt"), hasQuestions());
+        assertThat(evaluate(script, "a.csv"), hasQuestions());
+    }
 
 }

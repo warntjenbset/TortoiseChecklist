@@ -18,28 +18,19 @@
  */
 package de.tntinteractive.tortoisechecklist.core;
 
-import java.util.List;
+public class WithoutFileFilter extends FileFilter {
 
-public abstract class FileFilter implements ChecklistItemSourceFilter {
+    private final FileFilter f1;
+    private final FileFilter f2;
 
-    public FileFilter or(final FileFilter f) {
-        return new OrFileFilter(this, f);
-    }
-
-    public FileFilter without(final FileFilter f) {
-        return new WithoutFileFilter(this, f);
+    public WithoutFileFilter(final FileFilter f1, final FileFilter f2) {
+        this.f1 = f1;
+        this.f2 = f2;
     }
 
     @Override
-    public final boolean matches(final String wcRoot, final List<String> relativePaths, final String commitComment) {
-        for (final String path : relativePaths) {
-            if (this.matches(wcRoot, path)) {
-                return true;
-            }
-        }
-        return false;
+    public boolean matches(final String wcRoot, final String path) {
+        return this.f1.matches(wcRoot, path) && !this.f2.matches(wcRoot, path);
     }
-
-    public abstract boolean matches(String wcRoot, String path);
 
 }

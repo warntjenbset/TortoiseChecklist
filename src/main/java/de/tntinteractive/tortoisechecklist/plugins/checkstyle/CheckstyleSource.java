@@ -95,7 +95,10 @@ public class CheckstyleSource extends ChecklistItemSource {
     private Document loadOriginalXmlConfig(final String wcRoot)
         throws ParserConfigurationException, SAXException, IOException {
 
-        final DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+        final DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+        factory.setValidating(false);
+        factory.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
+        final DocumentBuilder builder = factory.newDocumentBuilder();
         return builder.parse(new File(wcRoot, this.pathToCheckConfig));
     }
 
