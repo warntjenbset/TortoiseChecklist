@@ -18,12 +18,12 @@
  */
 package de.tntinteractive.tortoisechecklist.core;
 
-public class OrFileFilter extends FileFilter {
+class OrFileFilter extends FileFilter {
 
     private final FileFilter f1;
     private final FileFilter f2;
 
-    public OrFileFilter(final FileFilter f1, final FileFilter f2) {
+    OrFileFilter(final FileFilter f1, final FileFilter f2) {
         this.f1 = f1;
         this.f2 = f2;
     }

@@ -60,7 +60,7 @@ public abstract class ChecklistItemSource {
         this.withFiles = filter;
     }
 
-    public List<? extends ChecklistItem> checkFilterAndCreateChecklistItems(
+    List<? extends ChecklistItem> checkFilterAndCreateChecklistItems(
             final String wcRoot, final List<String> relativePaths, final String commitComment)
         throws Exception {
         List<String> filteredPaths;
