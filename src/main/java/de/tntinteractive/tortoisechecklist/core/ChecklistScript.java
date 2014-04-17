@@ -41,10 +41,16 @@ public final class ChecklistScript {
         }
         fullScript.append(script);
 
-        final ScriptEngineManager factory = new ScriptEngineManager();
-        final ScriptEngine engine = factory.getEngineByName("JavaScript");
-        engine.put("sourceManager", sourceManager);
-        engine.eval(fullScript.toString());
+        try {
+            final ScriptEngineManager factory = new ScriptEngineManager();
+            final ScriptEngine engine = factory.getEngineByName("JavaScript");
+            engine.put("sourceManager", sourceManager);
+            engine.eval(fullScript.toString());
+        } catch (final ScriptException e) {
+            System.err.println("Script with error:");
+            System.err.println(fullScript);
+            throw e;
+        }
     }
 
 }
