@@ -85,7 +85,8 @@ public class TortoiseChecklist {
             for (final ChecklistPlugin plugin : plugins) {
                 logger.log("activePlugin", plugin.getClass().getName());
             }
-            ChecklistScript.evaluate(loadConfigScript(wcRoot), plugins, sources);
+            ChecklistScript.evaluate(loadGlobalConfigScript(wcRoot), plugins, sources);
+            ChecklistScript.evaluate(loadPersonalConfigScript(wcRoot), plugins, sources);
 
             final ExecutorService executor = Executors.newCachedThreadPool(new ThreadFactory() {
                 @Override
@@ -162,9 +163,21 @@ public class TortoiseChecklist {
         return System.getProperty("user.name");
     }
 
-    private static String loadConfigScript(final String wcRoot) throws IOException {
-        final File checklistFile = new File(getConfigDirectory(wcRoot), "checklist.global.js");
-        return readUtfFile(checklistFile);
+    private static String loadGlobalConfigScript(final String wcRoot) throws IOException {
+        return readUtfFile(getConfigScriptFile(wcRoot, "global"));
+    }
+
+    private static String loadPersonalConfigScript(final String wcRoot) throws IOException {
+        final File scriptFile = getConfigScriptFile(wcRoot, getUserName());
+        if (scriptFile.exists()) {
+            return readUtfFile(scriptFile);
+        } else {
+            return "";
+        }
+    }
+
+    private static File getConfigScriptFile(final String wcRoot, final String name) {
+        return new File(getConfigDirectory(wcRoot), "checklist." + name + ".js");
     }
 
     private static File getConfigDirectory(final String wcRoot) {

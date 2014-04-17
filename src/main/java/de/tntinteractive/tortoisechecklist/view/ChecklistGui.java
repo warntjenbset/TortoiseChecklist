@@ -74,7 +74,7 @@ public class ChecklistGui extends JDialog implements QuestionView {
     public ChecklistGui(final StatisticLogger logger) {
         this.setTitle("TortoiseChecklist");
         this.setModalityType(ModalityType.APPLICATION_MODAL);
-        this.setMinimumSize(new Dimension(400, 300));
+        this.setMinimumSize(new Dimension(600, 400));
 
         this.logger = logger;
 
@@ -237,6 +237,7 @@ public class ChecklistGui extends JDialog implements QuestionView {
                 }
                 ChecklistGui.this.closeIfAllOkAndNoQuestions();
                 ChecklistGui.this.itemPanel.validate();
+                ChecklistGui.this.itemPanel.repaint();
             }
         });
     }

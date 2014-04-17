@@ -31,6 +31,10 @@ public final class ChecklistScript {
             final String script, final Iterable<? extends ChecklistPlugin> plugins, final SourceManager sourceManager)
         throws ScriptException {
 
+        if (script.isEmpty()) {
+            return;
+        }
+
         final StringBuilder fullScript = new StringBuilder();
         for (final ChecklistPlugin plugin : plugins) {
             fullScript.append(plugin.getJS());

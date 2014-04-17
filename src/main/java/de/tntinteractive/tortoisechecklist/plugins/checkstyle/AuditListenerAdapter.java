@@ -18,6 +18,7 @@
  */
 package de.tntinteractive.tortoisechecklist.plugins.checkstyle;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -62,8 +63,9 @@ class AuditListenerAdapter implements AuditListener {
     }
 
     private void addViolation(final AuditEvent aEvt, final String message) {
+        final File f = new File(aEvt.getFileName());
         this.violations.add(ChecklistItem.createViolation(this.description + " in "
-            + aEvt.getFileName() +  ":" + aEvt.getLine() + ":\n" + aEvt.getSourceName() + "\n" + message));
+            + f.getName() +  ":" + aEvt.getLine() + " (" + f.getParent() + ")" + ":\n" + aEvt.getSourceName() + "\n" + message));
     }
 
     public List<? extends ChecklistItem> getViolations() {
