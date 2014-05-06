@@ -30,10 +30,12 @@ import de.tntinteractive.tortoisechecklist.core.ChecklistItem;
 class AuditListenerAdapter implements AuditListener {
 
     private final String description;
+    private final boolean createViolation;
     private final List<ChecklistItem> violations = new ArrayList<>();
 
-    public AuditListenerAdapter(final String description) {
+    public AuditListenerAdapter(final String description, final boolean createViolation) {
         this.description = description;
+        this.createViolation = createViolation;
     }
 
     @Override
@@ -64,8 +66,9 @@ class AuditListenerAdapter implements AuditListener {
 
     private void addViolation(final AuditEvent aEvt, final String message) {
         final File f = new File(aEvt.getFileName());
-        this.violations.add(ChecklistItem.createViolation(this.description + " in "
-            + f.getName() +  ":" + aEvt.getLine() + " (" + f.getParent() + ")" + ":\n" + aEvt.getSourceName() + "\n" + message));
+        final String text = this.description + " in "
+            + f.getName() +  ":" + aEvt.getLine() + " (" + f.getParent() + ")" + ":\n" + aEvt.getSourceName() + "\n" + message;
+        this.violations.add(this.createViolation ? ChecklistItem.createViolation(text) : ChecklistItem.createQuestion(text));
     }
 
     public List<? extends ChecklistItem> getViolations() {

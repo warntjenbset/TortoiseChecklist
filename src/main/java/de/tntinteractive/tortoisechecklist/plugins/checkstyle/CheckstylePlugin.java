@@ -25,7 +25,10 @@ public class CheckstylePlugin implements ChecklistPlugin {
     @Override
     public String getJS() {
         return "function checkstyle(description, checkFile) {\n"
-            + "    return sourceManager.add(new Packages.de.tntinteractive.tortoisechecklist.plugins.checkstyle.CheckstyleSource(description, checkFile));\n"
+            + "    return sourceManager.add(new Packages.de.tntinteractive.tortoisechecklist.plugins.checkstyle.CheckstyleSource(description, checkFile, true));\n"
+            + "}\n"
+            + "function checkstyleQuestion(description, checkFile) {\n"
+            + "    return sourceManager.add(new Packages.de.tntinteractive.tortoisechecklist.plugins.checkstyle.CheckstyleSource(description, checkFile, false));\n"
             + "}\n";
     }
 

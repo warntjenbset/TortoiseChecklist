@@ -55,10 +55,12 @@ public class CheckstyleSource extends ChecklistItemSource {
 
     private final String description;
     private final String pathToCheckConfig;
+    private final boolean violation;
 
-    public CheckstyleSource(final String description, final String pathToCheckConfig) {
+    public CheckstyleSource(final String description, final String pathToCheckConfig, final boolean violation) {
         this.description = description;
         this.pathToCheckConfig = pathToCheckConfig;
+        this.violation = violation;
     }
 
     @Override
@@ -74,7 +76,7 @@ public class CheckstyleSource extends ChecklistItemSource {
         final Checker checker = new Checker();
         checker.setModuleClassLoader(Checker.class.getClassLoader());
         checker.configure(this.loadConfig(wcRoot));
-        final AuditListenerAdapter listener = new AuditListenerAdapter(this.description);
+        final AuditListenerAdapter listener = new AuditListenerAdapter(this.description, this.violation);
         checker.addListener(listener);
         checker.process(this.toFiles(wcRoot, relativePaths));
         checker.destroy();

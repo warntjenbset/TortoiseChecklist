@@ -26,6 +26,8 @@ import java.awt.Point;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowFocusListener;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -72,8 +74,7 @@ public class ChecklistGui extends JDialog implements QuestionView {
     private final Map<String, JPanel> openSources = new HashMap<>();
 
     public ChecklistGui(final StatisticLogger logger) {
-        this.setTitle("TortoiseChecklist");
-        this.setModalityType(ModalityType.APPLICATION_MODAL);
+        super(null, "TortoiseChecklist", ModalityType.APPLICATION_MODAL);
         this.setMinimumSize(new Dimension(600, 400));
 
         this.logger = logger;
@@ -86,6 +87,19 @@ public class ChecklistGui extends JDialog implements QuestionView {
         this.setLayout(new BorderLayout());
         this.add(new JScrollPane(this.itemPanel), BorderLayout.CENTER);
         this.add(buttonPanel, BorderLayout.SOUTH);
+
+        this.addWindowFocusListener(new WindowFocusListener() {
+
+            @Override
+            public void windowLostFocus(final WindowEvent e) {
+                logger.log("focus", "lost");
+            }
+
+            @Override
+            public void windowGainedFocus(final WindowEvent e) {
+                logger.log("focus", "gained");
+            }
+        });
 
         this.pack();
         this.positionNearMouse();
