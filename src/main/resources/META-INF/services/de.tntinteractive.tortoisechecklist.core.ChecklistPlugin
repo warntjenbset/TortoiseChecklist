@@ -1,2 +1,3 @@
 de.tntinteractive.tortoisechecklist.plugins.basic.BasicChecklistPlugin
 de.tntinteractive.tortoisechecklist.plugins.checkstyle.CheckstylePlugin
+de.tntinteractive.tortoisechecklist.plugins.findbugs.FindbugsPlugin
