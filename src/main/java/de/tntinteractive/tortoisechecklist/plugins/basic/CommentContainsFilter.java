@@ -16,28 +16,23 @@
     You should have received a copy of the GNU General Public License
     along with TortoiseChecklist.  If not, see <http://www.gnu.org/licenses/>.
  */
-package de.tntinteractive.tortoisechecklist.core;
+package de.tntinteractive.tortoisechecklist.plugins.basic;
 
 import java.util.List;
 
-public abstract class ChecklistItemSourceFilter {
+import de.tntinteractive.tortoisechecklist.core.ChecklistItemSourceFilter;
 
-    public abstract boolean matches(String wcRoot, List<String> relativePaths, String commitComment);
+public class CommentContainsFilter extends ChecklistItemSourceFilter {
 
-    public ChecklistItemSourceFilter or(final ChecklistItemSourceFilter f) {
-        if (this instanceof FileFilter && f instanceof FileFilter) {
-            return new OrFileFilter((FileFilter) this, (FileFilter) f);
-        } else {
-            return new OrFilter(this, f);
-        }
+    private final String text;
+
+    public CommentContainsFilter(final String text) {
+        this.text = text.toLowerCase();
     }
 
-    public ChecklistItemSourceFilter and(final ChecklistItemSourceFilter f) {
-//        if (this instanceof FileFilter && f instanceof FileFilter) {
-//            return new OrFileFilter((FileFilter) this, (FileFilter) f);
-//        } else {
-            return new AndFilter(this, f);
-//        }
+    @Override
+    public boolean matches(final String wcRoot, final List<String> relativePaths, final String commitComment) {
+        return commitComment.toLowerCase().contains(this.text);
     }
 
 }

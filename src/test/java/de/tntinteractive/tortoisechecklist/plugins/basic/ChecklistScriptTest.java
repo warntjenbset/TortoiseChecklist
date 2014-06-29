@@ -39,11 +39,16 @@ public class ChecklistScriptTest {
 
     private static List<ChecklistItem> evaluate(final String script, final String... files)
         throws Exception {
+        return evaluateWithComment(script, "Kommentar", files);
+    }
+
+    private static List<ChecklistItem> evaluateWithComment(final String script, final String comment, final String... files)
+            throws Exception {
         final SourceManager sourceManager = new SourceManager();
         ChecklistScript.evaluate(script, Collections.singletonList(new BasicChecklistPlugin()), sourceManager);
         final ExecutorService e = new SynchronousExecutorService();
         final QuestionViewStub results = new QuestionViewStub();
-        sourceManager.evaluateSources("C:\\wcRoot", Arrays.asList(files), "Kommentar", e, results);
+        sourceManager.evaluateSources("C:\\wcRoot", Arrays.asList(files), comment, e, results);
         return results.getResults();
     }
 
@@ -136,6 +141,26 @@ public class ChecklistScriptTest {
         assertThat(evaluate(script, "a.txt"), hasQuestions("Schema-Checks ausgeführt?"));
         assertThat(evaluate(script, "b.txt"), hasQuestions());
         assertThat(evaluate(script, "a.csv"), hasQuestions());
+    }
+
+    @Test
+    public void testNonFileFilterOr() throws Exception {
+        final String script =
+                "question('Schema-Checks ausgeführt?').when(pathMatches('a').or(commentContains('schema')))\n";
+        assertThat(evaluateWithComment(script, "", "a"), hasQuestions("Schema-Checks ausgeführt?"));
+        assertThat(evaluateWithComment(script, "schema", "a"), hasQuestions("Schema-Checks ausgeführt?"));
+        assertThat(evaluateWithComment(script, "schema"), hasQuestions("Schema-Checks ausgeführt?"));
+        assertThat(evaluateWithComment(script, ""), hasQuestions());
+    }
+
+    @Test
+    public void testNonFileFilterAnd() throws Exception {
+        final String script =
+                "question('Schema-Checks ausgeführt?').when(pathMatches('a').and(commentContains('schema')))\n";
+        assertThat(evaluateWithComment(script, "", "a"), hasQuestions());
+        assertThat(evaluateWithComment(script, "schema", "a"), hasQuestions("Schema-Checks ausgeführt?"));
+        assertThat(evaluateWithComment(script, "schema"), hasQuestions());
+        assertThat(evaluateWithComment(script, ""), hasQuestions());
     }
 
 }

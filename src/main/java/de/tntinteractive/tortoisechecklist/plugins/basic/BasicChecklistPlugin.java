@@ -29,6 +29,9 @@ public class BasicChecklistPlugin implements ChecklistPlugin {
                 + "}\n"
                 + "function pathMatches(pattern) {\n"
                 + "    return new Packages.de.tntinteractive.tortoisechecklist.plugins.basic.PathPatternFilter(pattern);\n"
+                + "}\n"
+                + "function commentContains(text) {\n"
+                + "    return new Packages.de.tntinteractive.tortoisechecklist.plugins.basic.CommentContainsFilter(text);\n"
                 + "}\n";
     }
 

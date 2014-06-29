@@ -20,11 +20,7 @@ package de.tntinteractive.tortoisechecklist.core;
 
 import java.util.List;
 
-public abstract class FileFilter implements ChecklistItemSourceFilter {
-
-    public FileFilter or(final FileFilter f) {
-        return new OrFileFilter(this, f);
-    }
+public abstract class FileFilter extends ChecklistItemSourceFilter {
 
     public FileFilter without(final FileFilter f) {
         return new WithoutFileFilter(this, f);
