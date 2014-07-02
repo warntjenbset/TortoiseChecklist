@@ -98,6 +98,14 @@ public class PathMatcherTest {
     }
 
     @Test
+    public void testAlwaysRelativeToRoot() {
+        assertThat("dir/test.txt", matchesPathPattern("/dir/test.txt"));
+        assertThat("dir/test.txt", matchesPathPattern("dir/test.txt"));
+        assertThat("/dir/test.txt", matchesPathPattern("dir/test.txt"));
+        assertThat("/dir/test.txt", matchesPathPattern("/dir/test.txt"));
+    }
+
+    @Test
     public void testMatchesRegardlessOfSlashOrientation() {
         assertThat("dir/test.txt", matchesPathPattern("dir\\test.txt"));
         assertThat("dir\\test.txt", matchesPathPattern("dir/test.txt"));

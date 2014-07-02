@@ -94,7 +94,7 @@ class PathPattern {
 
     public PathPattern(final String pattern) {
         PathPatternMatcher cur = new FinalMatcher();
-        final String[] patternParts = this.split(pattern);
+        final String[] patternParts = this.split(stripLeadingSlash(pattern));
         for (int i = patternParts.length - 1; i >= 0; i--) {
             final String part = patternParts[i];
             if (part.equals("**")) {
@@ -108,8 +108,12 @@ class PathPattern {
         this.rootMatcher = cur;
     }
 
+    private static String stripLeadingSlash(final String pattern) {
+        return (pattern.startsWith("/") || pattern.startsWith("\\")) ? pattern.substring(1) : pattern;
+    }
+
     public boolean matches(final String path) {
-        final String[] parts = this.split(path);
+        final String[] parts = this.split(stripLeadingSlash(path));
         return this.rootMatcher.matches(parts, 0);
     }
 

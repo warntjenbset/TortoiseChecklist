@@ -24,8 +24,8 @@ public class FindbugsPlugin implements ChecklistPlugin {
 
     @Override
     public String getJS() {
-        return "function findbugs(pathPattern, relativeBinDir) {\n"
-            + "    return sourceManager.add(new Packages.de.tntinteractive.tortoisechecklist.plugins.findbugs.FindbugsSource(pathPattern, relativeBinDir));\n"
+        return "function findbugs(pathPattern, relativeBinDir, filterFile) {\n"
+            + "    return sourceManager.add(new Packages.de.tntinteractive.tortoisechecklist.plugins.findbugs.FindbugsSource(pathPattern, relativeBinDir, filterFile));\n"
             + "}\n";
     }
 

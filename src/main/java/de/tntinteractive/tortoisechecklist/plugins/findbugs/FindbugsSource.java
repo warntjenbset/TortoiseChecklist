@@ -40,10 +40,12 @@ public class FindbugsSource extends ChecklistItemSource {
 
     private final Pattern pathPattern;
     private final String binDir;
+    private final String filterFile;
 
-    public FindbugsSource(final String pathPattern, final String binDir) {
+    public FindbugsSource(final String pathPattern, final String binDir, final String filterFile) {
         this.pathPattern = Pattern.compile(pathPattern);
         this.binDir = binDir;
+        this.filterFile = filterFile;
     }
 
     @Override
@@ -58,8 +60,6 @@ public class FindbugsSource extends ChecklistItemSource {
         final Set<File> relevantBinDirs = new LinkedHashSet<>();
         final Set<String> classes = new LinkedHashSet<>();
         this.determineBinDirsAndClasses(wcRoot, relativePaths, relevantBinDirs, classes);
-        System.err.println("dirs=" + relevantBinDirs);
-        System.err.println("classes=" + classes);
 
         final ChecklistBugReporter bugs = new ChecklistBugReporter(this.getDescription());
         bugs.setPriorityThreshold(Priorities.LOW_PRIORITY);
@@ -70,6 +70,9 @@ public class FindbugsSource extends ChecklistItemSource {
         fb.setProject(this.createProject(relevantBinDirs));
         fb.setUserPreferences(UserPreferences.createDefaultUserPreferences());
         fb.setClassScreener(this.createClassScreener(classes));
+        if (this.filterFile != null) {
+            fb.addFilter(new File(wcRoot, this.filterFile).toString(), false);
+        }
         fb.finishSettings();
         fb.execute();
         return bugs.toChecklistItems();
