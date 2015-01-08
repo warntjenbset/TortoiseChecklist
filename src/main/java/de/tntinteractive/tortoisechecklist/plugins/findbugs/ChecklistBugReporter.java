@@ -51,7 +51,9 @@ class ChecklistBugReporter extends AbstractBugReporter {
     @Override
     public void reportAnalysisError(final AnalysisError arg0) {
         System.err.println("analysis error " + arg0.getMessage());
-        arg0.getException().printStackTrace(System.err);
+        if (arg0.getException() != null) {
+            arg0.getException().printStackTrace(System.err);
+        }
     }
 
     @Override
