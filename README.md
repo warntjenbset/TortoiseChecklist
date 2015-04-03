@@ -9,9 +9,13 @@ Client side hook for TortoiseSVN for automatic checks (like Checkstyle, FindBugs
 
 Once configured in TortoiseSVN, TortoiseChecklist will be called at every commit, making sure no checks are forgotten. But it does so without disturbing the development process more than needed: If there are no violations or relevant checklist questions, no user interaction is required at all.
 
+<img src="schema.png"/>
+
 ### Violations and questions
 
-Checks in TortoiseChecklist can result in two different kinds of items: "Violations" and "Checklist questions". A violation is something that is (almost) certainly wrong and where a fix is mandatory. A checklist question will be used in cases where "you should have a look at that and check if it is a problem".
+Checks in TortoiseChecklist can result in two different kinds of items: "Violations" and "Checklist questions". A violation is something that is (almost) certainly wrong and where a fix is mandatory. A checklist question will be used in cases where "you should have a look at that and check if it is a problem" or where you have to confirm that you did something.
+
+<img src="violations.png"/>
 
 ### Personal and global checks
 
