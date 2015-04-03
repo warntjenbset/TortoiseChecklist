@@ -42,4 +42,12 @@ TortoiseChecklist (and its DSL) can be extended using Java's ServiceLoader mecha
 
 Having checks to ensure high quality commits is important, but sometimes delivering a fix to the customer NOW is more important. There is no risk that TortoiseChecklist will be the reason for delays here: If there is a bug in a check or TortoiseChecklist itself or one of the checks, or if there is consensus to temporarily ignore a violation, the tool itself or single violations can be circumvented. This makes the introduction less risky than server-side commit hooks.
 
+### Building TortoiseChecklist
+
+You can build TortoiseChecklist using gradle (see build.gradle in the root directory).
+
+### Further reading
+
+TortoiseChecklist was used in a study on the benefits and problems of client-side pre-commit hooks. See the <a href="cphCaseStudySE2015.pdf">paper for the conference "SE 2015" in Dresden, Germany</a> or the <a href="cphPresentationSE2015.pdf">corresponding slides</a>.
+
 Icons in the GUI come from http://www.aha-soft.com
