@@ -21,6 +21,7 @@ package de.tntinteractive.tortoisechecklist.plugins.findbugs;
 import java.io.File;
 import java.net.URL;
 import java.net.URLClassLoader;
+import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
@@ -38,14 +39,45 @@ import edu.umd.cs.findbugs.config.UserPreferences;
 
 public class FindbugsSource extends ChecklistItemSource {
 
-    private final Pattern pathPattern;
-    private final String binDir;
+    private static final class BinaryInfo {
+        private final Pattern pathPattern;
+        private final String binDir;
+
+        public BinaryInfo(final Pattern pathPattern, final String binDir) {
+            this.pathPattern = pathPattern;
+            this.binDir = binDir;
+        }
+
+        public void addIfMatches(final String wcRoot, final String path,
+                final Set<File> relevantBinDirBuffer, final Set<String> classesBuffer) {
+            final Matcher m = this.pathPattern.matcher(path);
+            if (m.matches()) {
+                final File project = new File(wcRoot, m.group(1));
+                final File bin = new File(project, this.binDir);
+                relevantBinDirBuffer.add(bin);
+
+                final String className = m.group(2).replace(".java", "").replace('/', '.').replace('\\', '.');
+                classesBuffer.add(className);
+            }
+        }
+    }
+
+    private final List<BinaryInfo> binaryInfos;
     private final String filterFile;
 
-    public FindbugsSource(final String pathPattern, final String binDir, final String filterFile) {
-        this.pathPattern = Pattern.compile(pathPattern);
-        this.binDir = binDir;
+    public FindbugsSource(final String filterFile,
+            final String pathPattern1, final String binDir1,
+            final String pathPattern2, final String binDir2) {
+        this.binaryInfos = new ArrayList<>();
+        this.handleParam(pathPattern1, binDir1);
+        this.handleParam(pathPattern2, binDir2);
         this.filterFile = filterFile;
+    }
+
+    private void handleParam(final String pathPattern, final String binDir) {
+        if (pathPattern != null && binDir != null) {
+            this.binaryInfos.add(new BinaryInfo(Pattern.compile(pathPattern), binDir));
+        }
     }
 
     @Override
@@ -89,7 +121,9 @@ public class FindbugsSource extends ChecklistItemSource {
     private Project createProject(final Set<File> relevantBinDirs) {
         final Project project = new Project();
         for (final File f : relevantBinDirs) {
-            project.addFile(f.toString());
+            if (f.exists()) {
+                project.addFile(f.toString());
+            }
         }
         this.addClasspathToProject(project);
         return project;
@@ -100,14 +134,8 @@ public class FindbugsSource extends ChecklistItemSource {
             final Set<File> relevantBinDirs, final Set<String> classes) {
 
         for (final String path : relativePaths) {
-            final Matcher m = this.pathPattern.matcher(path);
-            if (m.matches()) {
-                final File project = new File(wcRoot, m.group(1));
-                final File bin = new File(project, this.binDir);
-                relevantBinDirs.add(bin);
-
-                final String className = m.group(2).replace(".java", "").replace('/', '.').replace('\\', '.');
-                classes.add(className);
+            for (final BinaryInfo binInfo : this.binaryInfos) {
+                binInfo.addIfMatches(wcRoot, path, relevantBinDirs, classes);
             }
         }
     }
