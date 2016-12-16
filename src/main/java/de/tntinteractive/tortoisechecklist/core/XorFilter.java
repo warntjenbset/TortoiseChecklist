@@ -20,28 +20,20 @@ package de.tntinteractive.tortoisechecklist.core;
 
 import java.util.List;
 
-public abstract class ChecklistItemSourceFilter {
+public class XorFilter extends ChecklistItemSourceFilter {
 
-    public abstract boolean matches(String wcRoot, List<String> relativePaths, String commitComment);
+    private final ChecklistItemSourceFilter f1;
+    private final ChecklistItemSourceFilter f2;
 
-    public ChecklistItemSourceFilter or(final ChecklistItemSourceFilter f) {
-        if (this instanceof FileFilter && f instanceof FileFilter) {
-            return new OrFileFilter((FileFilter) this, (FileFilter) f);
-        } else {
-            return new OrFilter(this, f);
-        }
+    public XorFilter(final ChecklistItemSourceFilter f1, final ChecklistItemSourceFilter f2) {
+        this.f1 = f1;
+        this.f2 = f2;
     }
 
-    public ChecklistItemSourceFilter and(final ChecklistItemSourceFilter f) {
-        return new AndFilter(this, f);
-    }
-
-    public ChecklistItemSourceFilter xor(final ChecklistItemSourceFilter f) {
-        return new XorFilter(this, f);
-    }
-
-    public ChecklistItemSourceFilter not() {
-        return new NotFilter(this);
+    @Override
+    public boolean matches(final String wcRoot, final List<String> relativePaths, final String commitComment) {
+        return this.f1.matches(wcRoot, relativePaths, commitComment)
+            ^ this.f2.matches(wcRoot, relativePaths, commitComment);
     }
 
 }
