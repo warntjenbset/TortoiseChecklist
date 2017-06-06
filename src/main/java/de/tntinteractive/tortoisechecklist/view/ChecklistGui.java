@@ -28,6 +28,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowFocusListener;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -46,6 +47,7 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JTextPane;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 
@@ -60,7 +62,8 @@ public class ChecklistGui extends JDialog implements QuestionView {
     private static final ImageIcon OK_ICON = new ImageIcon(ChecklistGui.class.getResource("ok-icon.png"));
     private static final ImageIcon CANCEL_ICON = new ImageIcon(ChecklistGui.class.getResource("cancel-icon.png"));
     private static final ImageIcon WAIT_ICON = new ImageIcon(ChecklistGui.class.getResource("wait-icon.png"));
-    private static final ImageIcon VIOLATION_ICON = new ImageIcon(ChecklistGui.class.getResource("violation-icon.png"));
+    private static final URL VIOLATION_ICON_URL = ChecklistGui.class.getResource("violation-icon.png");
+    private static final ImageIcon VIOLATION_ICON = new ImageIcon(VIOLATION_ICON_URL);
 
     private static final long serialVersionUID = -4221875145350667269L;
 
@@ -172,7 +175,7 @@ public class ChecklistGui extends JDialog implements QuestionView {
                         ret.add(cb.getText());
                     }
                 } else {
-                    ret.add(((JLabel) checkComponent).getText());
+                    ret.add(((JTextPane) checkComponent).getText());
                 }
             }
         }
@@ -287,16 +290,23 @@ public class ChecklistGui extends JDialog implements QuestionView {
             box.setBorder(BorderFactory.createEmptyBorder(5, 0, 5, 0));
             return box;
         } else {
-            final JLabel label = new JLabel(this.format(item.getText()));
-            label.setIcon(VIOLATION_ICON);
-            label.setHorizontalTextPosition(SwingConstants.LEADING);
-            label.setBorder(BorderFactory.createEmptyBorder(5, 0, 5, 0));
-            return label;
+            final JTextPane textPane = new JTextPane();
+            textPane.setContentType("text/html");
+            textPane.setEditable(false);
+            textPane.setBackground(null);
+            textPane.insertIcon(VIOLATION_ICON);
+            textPane.setText("<html>"
+                                + "<img src=\"" + VIOLATION_ICON_URL.toString() + "\"></img>"
+                                + "<b>" + this.format(item.getText()) + "</b>"
+                            + "</html>");
+            textPane.setPreferredSize(null);
+            textPane.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));
+            return textPane;
         }
     }
 
     private String format(final String text) {
-        return "<html>" + text.replace("<", "&lt;").replace("\n", "<br>");
+        return text.replace("<", "&lt;").replace("\n", "<br>");
     }
 
 }
