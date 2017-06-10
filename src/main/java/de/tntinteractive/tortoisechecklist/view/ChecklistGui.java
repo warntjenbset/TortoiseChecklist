@@ -63,7 +63,6 @@ public class ChecklistGui extends JDialog implements QuestionView {
     private static final ImageIcon CANCEL_ICON = new ImageIcon(ChecklistGui.class.getResource("cancel-icon.png"));
     private static final ImageIcon WAIT_ICON = new ImageIcon(ChecklistGui.class.getResource("wait-icon.png"));
     private static final URL VIOLATION_ICON_URL = ChecklistGui.class.getResource("violation-icon.png");
-    private static final ImageIcon VIOLATION_ICON = new ImageIcon(VIOLATION_ICON_URL);
 
     private static final long serialVersionUID = -4221875145350667269L;
 
@@ -85,10 +84,14 @@ public class ChecklistGui extends JDialog implements QuestionView {
         this.itemPanel = new JPanel();
         this.itemPanel.setLayout(new BoxLayout(this.itemPanel, BoxLayout.PAGE_AXIS));
 
+        final JPanel helperPanel = new JPanel(new BorderLayout());
+        helperPanel.add(this.itemPanel, BorderLayout.NORTH);
+
         final JPanel buttonPanel = this.initButtons();
 
         this.setLayout(new BorderLayout());
-        this.add(new JScrollPane(this.itemPanel), BorderLayout.CENTER);
+        final JScrollPane scrollPane = new JScrollPane(helperPanel);
+        this.add(scrollPane, BorderLayout.CENTER);
         this.add(buttonPanel, BorderLayout.SOUTH);
 
         this.addWindowFocusListener(new WindowFocusListener() {
@@ -174,6 +177,8 @@ public class ChecklistGui extends JDialog implements QuestionView {
                     if (!cb.isSelected()) {
                         ret.add(cb.getText());
                     }
+                } else if (checkComponent instanceof JLabel) {
+                    ret.add(((JLabel) checkComponent).getText());
                 } else {
                     ret.add(((JTextPane) checkComponent).getText());
                 }
@@ -225,6 +230,7 @@ public class ChecklistGui extends JDialog implements QuestionView {
         final JPanel panel = new JPanel();
         panel.setLayout(new BoxLayout(panel, BoxLayout.PAGE_AXIS));
         panel.add(new JLabel("Warte auf Ergebnisse: " + description, WAIT_ICON, SwingConstants.LEADING));
+        panel.setAlignmentX(Component.LEFT_ALIGNMENT);
         return panel;
     }
 
@@ -287,6 +293,7 @@ public class ChecklistGui extends JDialog implements QuestionView {
                     ChecklistGui.this.logger.log(box.isSelected() ? "boxActivate" : "boxDeactivate", item.getText());
                 }
             });
+            box.setAlignmentX(Component.LEFT_ALIGNMENT);
             box.setBorder(BorderFactory.createEmptyBorder(5, 0, 5, 0));
             return box;
         } else {
@@ -294,19 +301,18 @@ public class ChecklistGui extends JDialog implements QuestionView {
             textPane.setContentType("text/html");
             textPane.setEditable(false);
             textPane.setBackground(null);
-            textPane.insertIcon(VIOLATION_ICON);
             textPane.setText("<html>"
                                 + "<img src=\"" + VIOLATION_ICON_URL.toString() + "\"></img>"
                                 + "<b>" + this.format(item.getText()) + "</b>"
                             + "</html>");
-            textPane.setPreferredSize(null);
-            textPane.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));
+            textPane.setCaretPosition(0);
+            textPane.setAlignmentX(Component.LEFT_ALIGNMENT);
             return textPane;
         }
     }
 
     private String format(final String text) {
-        return text.replace("<", "&lt;").replace("\n", "<br>");
+        return text.trim().replace("<", "&lt;").replace("\r", "").replace("\n", "<br>");
     }
 
 }
