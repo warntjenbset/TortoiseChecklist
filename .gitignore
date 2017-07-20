@@ -2,3 +2,7 @@
 /.gradle
 /build
 /bin
+.idea
+.metadata
+.gradle
+*.iml
