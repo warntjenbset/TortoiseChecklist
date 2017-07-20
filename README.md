@@ -29,10 +29,12 @@ Long Checklists with lots of irrelevant questions tend to annoy developers. In T
 
 To configure the checks, an easy but powerful JavaScript based DSL is used. In the configuration file, it is specified which checks shall be applied to which files. Example:
 
-    question('JAXB geprüft?').when(pathMatches('**/*.xsd'))
-    checkstyle('Java-Checkstyle', 'checkstyle_src.xml').withFilesWhere(pathMatches('**/src/**/*.java'))
-    checkstyle('Java-Testcase-Checkstyle', 'checkstyle_test.xml').withFilesWhere(pathMatches('**/test/**/*.java'))
-    findbugs('(.+)/src/(.*)\\.java', 'bin').withFilesWhere(pathMatches('**/*.java'))
+    question('JAXB checked ?').when(pathMatches('**/*.xsd'));
+	question('Only one of two sourcesets updated ?').when(pathMatches('**/src/projectX/set1/*.java').xor(pathMatches('**/src/projectX/set2/*.java')));
+	question('Testcases updated ?').when(pathMatches('**/src/**/*.java').and(pathMatches('**/test/**/*.java').not()));
+    checkstyle('Java-Checkstyle', 'checkstyle_src.xml').withFilesWhere(pathMatches('**/src/**/*.java'));
+    checkstyle('Java-Testcase-Checkstyle', 'checkstyle_test.xml').withFilesWhere(pathMatches('**/test/**/*.java'));
+    findbugs('(.+)/src/(.*)\\.java', 'bin').withFilesWhere(pathMatches('**/*.java'));
 
 ### Extensible by plugins
 
